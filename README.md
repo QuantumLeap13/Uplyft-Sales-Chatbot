@@ -35,7 +35,7 @@ uplyft-sales-chatbot/
 ├── README.md                   # You are here
 └── requirements.txt            # Python dependencies (Flask, Flask-Cors, SQLAlchemy, Faker)
 
-
+```bash
 
 
 
