@@ -21,16 +21,16 @@ Tech Stack
 
 Project Structure
 
+```bash
 uplyft-sales-chatbot/
 │
 ├── backend/
-│ ├── app.py # Flask backend API
-│ ├── products.db # SQLite database
-│ └── venv/ # Virtual environment (optional)
+│   ├── app.py                  # Flask backend API
+│   ├── products.db             # SQLite database
+│   └── venv/                   # Virtual environment (optional)
 │
 ├── frontend/
-│ └── index.html # Full UI with chat logic and history
+│   └── index.html              # Full UI with chat logic and history
 │
-├── README.md # You are here
-└── requirements.txt # Python dependenciese here
+├── README.md                   # You are here
 └── requirements.txt            # Python dependencies (Flask, Flask-Cors, SQLAlchemy, Faker)
