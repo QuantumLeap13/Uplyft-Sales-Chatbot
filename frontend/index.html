@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🛍️ Uplyft Sales Chatbot</title>
+  <style>
+    body {
+      background: #f7f9fc;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      color: #333;
+    }
+    #main-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      gap: 20px;
+    }
+    #history-container {
+      width: 30%;
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      height: 500px;
+      overflow-y: auto;
+    }
+    #chat-wrapper {
+      width: 70%;
+    }
+    #login-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px; /* add this line */
+}
+    
+    #chatbox {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: #fefefe;
+    }
+    .msg {
+      margin: 10px 0;
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 80%;
+      clear: both;
+    }
+    .user {
+      background: #dcf8c6;
+      float: right;
+    }
+    .bot {
+      background: #f1f0f0;
+      float: left;
+    }
+    #input-container {
+      display: flex;
+      gap: 10px;
+    }
+    #userInput {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .history-entry {
+      background: #eee;
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    input {
+      margin: 6px 0;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px; 
+}
+    @media (max-width: 900px) {
+      #main-container {
+        flex-direction: column;
+      }
+      #history-container, #chat-wrapper {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🛍️ Uplyft Sales Chatbot</h2>
+  <div id="main-container">
+    <div id="history-container">
+      <h4>Chat History</h4>
+      <div id="historyList"></div>
+    </div>
+    <div id="chat-wrapper">
+      <div id="login-container">
+        <h3>Login to Continue</h3>
+        <input type="email" id="email" placeholder="Enter email" required />
+        <input type="password" id="password" placeholder="Enter password" required />
+        <button id="loginBtn">Login</button>
+      </div>
+      <div id="chat-container" style="display:none;">
+        <div class="toolbar">
+          <button id="newChatBtn">+ New Chat</button>
+          <button id="logoutBtn">Logout</button>
+        </div>
+        <div id="chatbox"></div>
+        <div id="input-container">
+          <input type="text" id="userInput" placeholder="Ask me about products..." />
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const newChatBtn = document.getElementById("newChatBtn");
+    const loginContainer = document.getElementById("login-container");
+    const chatContainer = document.getElementById("chat-container");
+    const chatbox = document.getElementById("chatbox");
+    const input = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const historyList = document.getElementById("historyList");
+
+    let allChats = JSON.parse(localStorage.getItem("allChats") || "[]");
+    let currentChat = JSON.parse(localStorage.getItem("currentChat") || "[]");
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `msg ${sender}`;
+      msgDiv.innerHTML = text;
+      chatbox.appendChild(msgDiv);
+      chatbox.scrollTop = chatbox.scrollHeight;
+      currentChat.push({ text, sender });
+      localStorage.setItem("currentChat", JSON.stringify(currentChat));
+    }
+
+    function renderHistory() {
+      historyList.innerHTML = "";
+      allChats.forEach((chat, i) => {
+        const div = document.createElement("div");
+        div.className = "history-entry";
+        div.textContent = `Chat ${allChats.length - i} (${chat.timestamp})`;
+        div.onclick = () => loadChat(i);
+        historyList.appendChild(div);
+      });
+    }
+
+    function loadChat(index) {
+      chatbox.innerHTML = "";
+      const messages = allChats[index].messages;
+      messages.forEach(msg => {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `msg ${msg.sender}`;
+        msgDiv.innerHTML = msg.text;
+        chatbox.appendChild(msgDiv);
+      });
+    }
+
+    function saveCurrentToHistory() {
+      if (currentChat.length > 0) {
+        const timestamp = new Date().toLocaleString();
+        allChats.unshift({ timestamp, messages: currentChat });
+        localStorage.setItem("allChats", JSON.stringify(allChats));
+        localStorage.removeItem("currentChat");
+        currentChat = [];
+        renderHistory();
+      }
+    }
+
+    loginBtn.onclick = () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (email && password) {
+        localStorage.setItem("loggedIn", "true");
+        loginContainer.style.display = "none";
+        chatContainer.style.display = "block";
+        saveCurrentToHistory(); // Save previous session
+        chatbox.innerHTML = "";
+        localStorage.setItem("currentChat", JSON.stringify([]));
+        renderHistory();
+      } else {
+        alert("Please enter both email and password.");
+      }
+    };
+
+    logoutBtn.onclick = () => {
+      saveCurrentToHistory();
+      localStorage.removeItem("loggedIn");
+      location.reload();
+    };
+
+    newChatBtn.onclick = () => {
+      saveCurrentToHistory();
+      chatbox.innerHTML = "";
+      currentChat = [];
+      localStorage.setItem("currentChat", JSON.stringify([]));
+    };
+
+    sendBtn.onclick = async () => {
+      const message = input.value.trim();
+      if (!message) return;
+      addMessage(`<b>You:</b> ${message}`, "user");
+      input.value = "";
+
+      const msg = message.toLowerCase();
+      let products = [];
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/products");
+        products = await res.json();
+      } catch {
+        addMessage("<b>Bot:</b> Server not responding.", "bot");
+        return;
+      }
+
+      if (msg.includes("show") && msg.includes("product")) {
+        let reply = "<b>Bot:</b> Here are some products:<ul>";
+        products.forEach(p => {
+          reply += `<li><b>${p.name}</b> - ₹${p.price} (Stock: ${p.stock})</li>`;
+        });
+        reply += "</ul>";
+        addMessage(reply, "bot");
+        return;
+      }
+
+      let matched = false;
+      for (let p of products) {
+        const name = p.name.toLowerCase();
+        if (msg.includes(name)) {
+          matched = true;
+          if (msg.includes("price")) {
+            addMessage(`<b>Bot:</b> The price of <b>${p.name}</b> is ₹${p.price}.`, "bot");
+          } else if (msg.includes("stock") || msg.includes("available") || msg.includes("left")) {
+            addMessage(`<b>Bot:</b> We have <b>${p.stock}</b> ${p.name} available.`, "bot");
+          } else {
+            addMessage(`<b>Bot:</b> <b>${p.name}</b> - ₹${p.price}, Stock: ${p.stock}`, "bot");
+          }
+          break;
+        }
+      }
+
+      if (!matched) {
+        addMessage(`<b>Bot:</b> Sorry, I didn’t understand.<br>Try:<br>- "Show products"<br>- "Price of Group Build"<br>- "How many Apply True left?"`, "bot");
+      }
+    };
+
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+
+    if (localStorage.getItem("loggedIn") === "true") {
+      loginContainer.style.display = "none";
+      chatContainer.style.display = "block";
+      chatbox.innerHTML = "";
+      currentChat = JSON.parse(localStorage.getItem("currentChat") || "[]");
+      currentChat.forEach(msg => addMessage(msg.text, msg.sender));
+      renderHistory();
+    }
+  </script>
+</body>
+</html>
