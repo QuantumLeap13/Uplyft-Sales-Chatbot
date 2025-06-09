@@ -19,6 +19,16 @@ Tech Stack
 | Mock Data   | Faker (Python)        |
 | API Format  | JSON (REST API)       |
 
+
+Assignment Scope
+This project was developed as part of the Uplyft Full Stack Intern Case Study (Internshala, June 2025), with focus on:
+Chatbot product query simulation
+Full-stack integration with backend API
+UI/UX considerations and chat persistence
+Code organization and clean architecture
+
+
+
 Project Structure
 
 ```bash
@@ -35,17 +45,3 @@ uplyft-sales-chatbot/
 ├── README.md                   # You are here
 └── requirements.txt            # Python dependencies (Flask, Flask-Cors, SQLAlchemy, Faker)
 
-```bash
-
-
-
-Assignment Scope
-This project was developed as part of the Uplyft Full Stack Intern Case Study (Internshala, June 2025), with focus on:
-
-Chatbot product query simulation
-
-Full-stack integration with backend API
-
-UI/UX considerations and chat persistence
-
-Code organization and clean architecture
