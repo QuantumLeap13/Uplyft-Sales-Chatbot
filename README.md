@@ -21,11 +21,7 @@ Tech Stack
 
 
 Assignment Scope
-This project was developed as part of the Uplyft Full Stack Intern Case Study (Internshala, June 2025), with focus on:
-Chatbot product query simulation
-Full-stack integration with backend API
-UI/UX considerations and chat persistence
-Code organization and clean architecture
+This project was developed as part of the Uplyft Full Stack Intern Case Study , with focus on: Chatbot product query simulation, Full-stack integration with backend API, UI/UX considerations and chat persistence and Code organization and clean architecture
 
 
 
