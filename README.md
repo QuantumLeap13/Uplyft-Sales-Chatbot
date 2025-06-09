@@ -8,11 +8,16 @@ Product listing with dynamic responses
 100+ mock products generated with Faker
 RESTful API using Flask backend
 Responsive and clean frontend design
+
+
 Tech Stack
-Frontend: HTML, CSS, JavaScript
-Backend:	Python, Flask
-Database:	SQLite via SQLAlchemy
-API Format:	JSON (REST API)
+| Layer       | Technology           |
+|-------------|----------------------|
+| Frontend    | HTML, CSS, JavaScript |
+| Backend     | Python, Flask         |
+| Database    | SQLite via SQLAlchemy |
+| Mock Data   | Faker (Python)        |
+| API Format  | JSON (REST API)       |
 
 Project Structure
 
